@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -17,14 +19,24 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        public void Add(Car car)
+        public IResult Add(Car car)
         {
-            throw new NotImplementedException();
+            if (car.ModelYear>2020)
+            {
+                return new ErrorResult(Messages.CarModelYearInvalid);
+            }
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarAdded);
         }
 
-        public List<Car> GetAll()
+        public IDataResult<List<Car>> GetAll()
         {
-            return _carDal.GetAll();
+            return new DataResult<List<Car>>(_carDal.GetAll(),true,"Ürünler listelendi");
+        }
+
+        public Car GetById(int carId)
+        {
+            return _carDal.Get(p=>p.Id==carId);
         }
 
         public List<CarDetailDto> GetCarDetails()
