@@ -10,18 +10,19 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            
             //CarTest();
             //BrandTest();
             //UserAdd();
             //CustomerAdd();
-            
+            //RentalAdd();
 
+        }
 
-
-
-
-
+        private static void RentalAdd()
+        {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            var result = rentalManager.Add(new Rental { CarId = 1, CustomerId = 1, RentDate = DateTime.Now, Id = 1 });
+            Console.WriteLine(result.Message);
         }
 
         private static void CustomerAdd()
