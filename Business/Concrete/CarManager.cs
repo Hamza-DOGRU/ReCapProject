@@ -23,10 +23,10 @@ namespace Business.Concrete
         {
             if (car.ModelYear>2020)
             {
-                return new ErrorResult(Messages.CarModelYearInvalid);
+                _carDal.Add(car);
+                return new SuccessResult(Messages.CarAdded);
             }
-            _carDal.Add(car);
-            return new SuccessResult(Messages.CarAdded);
+                return new ErrorResult(Messages.CarModelYearInvalid);
         }
 
         public IDataResult<List<Car>> GetAll()
