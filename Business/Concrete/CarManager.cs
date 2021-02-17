@@ -29,9 +29,15 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CarModelYearInvalid);
         }
 
+        public IResult Delete(Car car)
+        {
+            _carDal.Delete(car);
+            return new SuccessResult(Messages.CarDeleted);
+        }
+
         public IDataResult<List<Car>> GetAll()
         {
-            if (DateTime.Now.Hour==15)
+            if (DateTime.Now.Hour==14)
             {
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
@@ -61,6 +67,12 @@ namespace Business.Concrete
         {
 
             return new SuccessDataResult<List<Car>>( _carDal.GetAll(p => p.ColorId == id),Messages.CarsListed);
+        }
+
+        public IResult Update(Car car)
+        {
+            _carDal.Update(car);
+            return new SuccessResult(Messages.CarUpdated);
         }
     }
 }
