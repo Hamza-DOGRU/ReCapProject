@@ -24,8 +24,8 @@ namespace Core.Aspects.Autofac.Validation
         protected override void OnBefore(IInvocation invocation)
         {
             var validator = (IValidator)Activator.CreateInstance(_validatorType);  //Reflection--Çalışma anında CarValidatorün bir instance oluştur
-            var entityType = _validatorType.BaseType.GetGenericArguments()[0];  //CarValidatorün çalışma tipini bul veri tipini
-            var entities = invocation.Arguments.Where(t => t.GetType() == entityType);  //İlgili methodun parametrelerini bul
+            var entityType = _validatorType.BaseType.GetGenericArguments()[0];  //CarValidatorün base type git generic arg ilkini al
+            var entities = invocation.Arguments.Where(t => t.GetType() == entityType);  //İlgili methodun parametrelerinden generic tipe uygun olanı bul 
             foreach (var entity in entities)
             {
                 ValidationTool.Validate(validator, entity); //ValidationTool kullanarak doğrula
