@@ -10,7 +10,7 @@ namespace Core.Utilities.FileHelper
     {
         public static string Add(IFormFile formFile)
         {
-            string extension = Path.GetExtension(formFile.FileName);
+            string extension = Path.GetExtension(formFile.FileName).ToUpper();
             string newguid = NewGuid() + extension;
 
             var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName+@"\Images");
