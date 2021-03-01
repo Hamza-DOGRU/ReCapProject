@@ -27,7 +27,7 @@ namespace Business.Concrete
             var imagecount = _carImageDal.GetAll(i=>i.CarId==carImage.CarId).Count;
             if (imagecount>=5)
             {
-                return new ErrorResult("sayıyı aştınız");
+                return new ErrorResult(Messages.CheckIfImageLimit);
             }
             carImage.ImagePath = ImageFileHelper.Add(formFile);
             carImage.Date = DateTime.Now;
@@ -35,9 +35,12 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ImageAdded);
         }
 
-        public IResult Delete(CarImage carImage)
+        public IResult Delete(CarImage carImage ,int id)
         {
-            throw new NotImplementedException();
+            var image = _carImageDal.Get(i=>i.Id==id);
+            _carImageDal.Delete(image);
+            carImage.ImagePath = ImageFileHelper.Delete();
+            return new SuccessResult("Resim başarıyla silinmiştir");
         }
 
         public IDataResult<List<CarImage>> GetAll()
@@ -50,10 +53,19 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public IResult Update(CarImage carImage, IFormFile file)
+        public IResult Update(CarImage carImage, IFormFile formFile)
         {
-            throw new NotImplementedException();
+            var image = _carImageDal.Get(i=>i.Id==carImage.Id);
+            if (image==null)
+            {
+                return new ErrorResult();
+            }
+            carImage.ImagePath = ImageFileHelper.Update(formFile);
+            carImage.Date = DateTime.Now;
+            _carImageDal.Update(carImage);
+            return new SuccessResult(Messages.ImageUpdated);
         }
+
 
     }
 }

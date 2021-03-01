@@ -11,9 +11,9 @@ namespace Core.Utilities.FileHelper
 
         public static string Add(IFormFile formFile)
         {
-            var directory = Environment.CurrentDirectory + "\\wwwroot\\Image";
-            string path = Path.GetExtension(formFile.FileName);
-            string newpath = NewGuid(formFile.FileName) + path;
+            var directory = Environment.CurrentDirectory + "\\wwwroot\\Image"; //kayıt yapacağı yol
+            string path = Path.GetExtension(formFile.FileName); //uzantısını al
+            string newpath = NewGuid(formFile.FileName) + path; //yani uzantı oluştur
 
             if (!Directory.Exists(newpath))
             {
@@ -26,19 +26,26 @@ namespace Core.Utilities.FileHelper
             }
             return newpath;
         }
-        public static void Update(IFormFile formFile,string path)
+        public static string Update(IFormFile formFile)
         {
-            string extension = Path.GetExtension(formFile.FileName);
-            using (FileStream fileStream=File.Open(path,FileMode.Open))
+            var directory = Environment.CurrentDirectory + "\\wwwroot\\Image"; //kayıt yapacağı yol
+            string path = Path.GetExtension(formFile.FileName); //uzantısını al
+            string newpath = NewGuid(formFile.FileName) + path; //yani uzantı oluştur
+
+            if (!Directory.Exists(newpath))
+            {
+                Directory.CreateDirectory(newpath);
+            }
+            using (FileStream fileStream = File.Create(directory + "\\" + newpath))
             {
                 formFile.CopyTo(fileStream);
                 fileStream.Flush();
             }
-
+            return newpath;
         }
-        public static void Delete(string path)
+        public static void Delete(IFormFile formFile)
         {
-            File.Delete(path);
+            File.Delete(formFile);
         }
         public static string NewGuid(string FileName)
         {
