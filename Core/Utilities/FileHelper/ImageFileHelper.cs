@@ -8,24 +8,23 @@ namespace Core.Utilities.FileHelper
 {
     public class ImageFileHelper
     {
+
         public static string Add(IFormFile formFile)
         {
-            string extension = Path.GetExtension(formFile.FileName).ToUpper();
-            string newguid = NewGuid() + extension;
+            var directory = Environment.CurrentDirectory + "\\wwwroot\\Image";
+            string path = Path.GetExtension(formFile.FileName);
+            string newpath = NewGuid(formFile.FileName) + path;
 
-            var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName+@"\Images");
-            if (!Directory.Exists(path))
+            if (!Directory.Exists(newpath))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(newpath);
             }
-            string Path2;
-            using (FileStream fileStream=File.Create(path+"\\"+newguid))
+            using (FileStream fileStream = File.Create(directory + "\\" + newpath))
             {
                 formFile.CopyTo(fileStream);
-                Path2 = path + "\\" + newguid;
                 fileStream.Flush();
             }
-            return Path2;
+            return newpath;
         }
         public static void Update(IFormFile formFile,string path)
         {
@@ -41,9 +40,10 @@ namespace Core.Utilities.FileHelper
         {
             File.Delete(path);
         }
-        public static string NewGuid()
+        public static string NewGuid(string FileName)
         {
-            return Guid.NewGuid().ToString() + "." + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year;
+            
+            return Guid.NewGuid() + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year;
         }
     }
 }

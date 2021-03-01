@@ -34,5 +34,6 @@ namespace Business.Constants
         public static string CarCountOfBrandError="Bu markada araç limitinizi doldurdunuz";
         public static string CheckIfCarModelYearError="Girilen aracın model yılı 2020'den büyük olmalı";
         public static string CheckIfBrandLimit="Sistemde kayıtlı marka sayısı 20'dir yeni kayıt eklenemez";
+        public static string ImageAdded="Resim eklendi";
     }
 }

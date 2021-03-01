@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Business;
 using Core.Utilities.FileHelper;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -22,10 +24,15 @@ namespace Business.Concrete
 
         public IResult Add(CarImage carImage, IFormFile formFile)
         {
+            var imagecount = _carImageDal.GetAll(i=>i.CarId==carImage.CarId).Count;
+            if (imagecount>=5)
+            {
+                return new ErrorResult("sayıyı aştınız");
+            }
             carImage.ImagePath = ImageFileHelper.Add(formFile);
             carImage.Date = DateTime.Now;
             _carImageDal.Add(carImage);
-            return new SuccessResult();
+            return new SuccessResult(Messages.ImageAdded);
         }
 
         public IResult Delete(CarImage carImage)
@@ -47,5 +54,6 @@ namespace Business.Concrete
         {
             throw new NotImplementedException();
         }
+
     }
 }
