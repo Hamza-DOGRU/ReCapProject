@@ -71,7 +71,7 @@ namespace Business.Concrete
         private List<CarImage> CheckCarImageExists(int carId)
         {
             var result = _carImageDal.GetAll(x => x.CarId == carId).Any();
-            string path = @"\wwwroot\Images\mslogo.jpg";
+            string path = @"\wwwroot\Images\default.jpg";
             if (!result)
             {
                 List<CarImage> carImages = new List<CarImage>()
