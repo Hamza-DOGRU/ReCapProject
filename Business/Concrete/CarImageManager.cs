@@ -8,6 +8,7 @@ using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
@@ -35,37 +36,52 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ImageAdded);
         }
 
-        public IResult Delete(CarImage carImage ,int id)
+        public IResult Delete(CarImage carImage ,IFormFile formFile)
         {
-            var image = _carImageDal.Get(i=>i.Id==id);
-            _carImageDal.Delete(image);
-            carImage.ImagePath = ImageFileHelper.Delete();
-            return new SuccessResult("Resim başarıyla silinmiştir");
+            var image = _carImageDal.Get(c => c.Id==carImage.Id);
+            if (image == null)
+            {
+                return new ErrorResult(Messages.ImageNotFound);
+            }
+
+            ImageFileHelper.Delete(image.ImagePath);
+            _carImageDal.Delete(carImage);
+            return new SuccessResult(Messages.İmageDeleted);
         }
 
-        public IDataResult<List<CarImage>> GetAll()
+        public IDataResult<List<CarImage>> GetAll(int id)
         {
-            throw new NotImplementedException();
+            
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
         }
 
-        public IDataResult<CarImage> GetById(int Id)
+        public IDataResult<List<CarImage>> GetById(int Id)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<CarImage>>(CheckCarImageExists(Id),Messages.ListedByCarId);
         }
 
         public IResult Update(CarImage carImage, IFormFile formFile)
         {
-            var image = _carImageDal.Get(i=>i.Id==carImage.Id);
-            if (image==null)
-            {
-                return new ErrorResult();
-            }
-            carImage.ImagePath = ImageFileHelper.Update(formFile);
+            var uimage = (_carImageDal.Get(i=>i.Id==carImage.Id).ImagePath);
+            carImage.ImagePath = ImageFileHelper.Update(uimage,formFile); 
             carImage.Date = DateTime.Now;
             _carImageDal.Update(carImage);
             return new SuccessResult(Messages.ImageUpdated);
         }
-
+        private List<CarImage> CheckCarImageExists(int carId)
+        {
+            var result = _carImageDal.GetAll(x => x.CarId == carId).Any();
+            string path = @"\wwwroot\Images\mslogo.jpg";
+            if (!result)
+            {
+                List<CarImage> carImages = new List<CarImage>()
+                {
+                   new CarImage{CarId = carId,ImagePath =path}
+                };
+                return carImages;
+            }
+            return _carImageDal.GetAll(x => x.CarId == carId);
+        }
 
     }
 }

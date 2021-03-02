@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Core.Utilities.Results;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,49 +9,52 @@ namespace Core.Utilities.FileHelper
 {
     public class ImageFileHelper
     {
-
+        private static string _currentDirectory = Environment.CurrentDirectory + @"\wwwroot";
+        private static string _folder = @"\Image\";
         public static string Add(IFormFile formFile)
         {
-            var directory = Environment.CurrentDirectory + "\\wwwroot\\Image"; //kayıt yapacağı yol
             string path = Path.GetExtension(formFile.FileName); //uzantısını al
-            string newpath = NewGuid(formFile.FileName) + path; //yani uzantı oluştur
+            string newpath = _currentDirectory + _folder + NewGuid(formFile.FileName) + path; //yani uzantı oluştur
 
-            if (!Directory.Exists(newpath))
-            {
-                Directory.CreateDirectory(newpath);
-            }
-            using (FileStream fileStream = File.Create(directory + "\\" + newpath))
+            using (FileStream fileStream = File.Create(newpath))
             {
                 formFile.CopyTo(fileStream);
                 fileStream.Flush();
             }
             return newpath;
         }
-        public static string Update(IFormFile formFile)
+        public static string Update(string uimagePath,IFormFile formFile)
         {
-            var directory = Environment.CurrentDirectory + "\\wwwroot\\Image"; //kayıt yapacağı yol
-            string path = Path.GetExtension(formFile.FileName); //uzantısını al
-            string newpath = NewGuid(formFile.FileName) + path; //yani uzantı oluştur
+            var result = (uimagePath.Replace(@"\", "\\"));
+            if (File.Exists(result)==true)
+            {
+                File.Delete(result);
+                string path = Path.GetExtension(formFile.FileName); //uzantısını al
+                string newpath = _currentDirectory + _folder + NewGuid(formFile.FileName) + path; //yani uzantı oluştur
 
-            if (!Directory.Exists(newpath))
-            {
-                Directory.CreateDirectory(newpath);
+                using (FileStream fileStream = File.Create(newpath))
+                {
+                    formFile.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+                uimagePath = newpath; 
             }
-            using (FileStream fileStream = File.Create(directory + "\\" + newpath))
-            {
-                formFile.CopyTo(fileStream);
-                fileStream.Flush();
-            }
-            return newpath;
+            return uimagePath;
+
         }
-        public static void Delete(IFormFile formFile)
+        public static void Delete(string imagePath)
         {
-            File.Delete(formFile);
+            var result = (imagePath.Replace(@"\","\\"));
+            if (File.Exists(result)==true)
+            {
+                File.Delete(result);
+            }
         }
-        public static string NewGuid(string FileName)
+        private static string NewGuid(string FileName)
         {
             
-            return Guid.NewGuid() + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year;
+            return Guid.NewGuid() + "-" + DateTime.Now.Day + "-" + DateTime.Now.Month + "-" + DateTime.Now.Year;
         }
+
     }
 }
