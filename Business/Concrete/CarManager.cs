@@ -46,7 +46,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CarDeleted);
         }
 
-        //[CacheAspect]
+        //[CacheAspect] 
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour == 14)
