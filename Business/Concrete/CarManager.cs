@@ -46,6 +46,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CarDeleted);
         }
 
+        //[CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour == 14)
@@ -103,7 +104,7 @@ namespace Business.Concrete
         //Sisteme yeni kayıt olacak araçların model yılının 2020'den yüksek olması gerekiyor.
         private IResult CheckIfCarModelYear(decimal modelYear)
         {
-            if (modelYear >=2020)
+            if (modelYear <=2020)
             {
                 return new ErrorResult(Messages.CheckIfCarModelYearError);
             }
